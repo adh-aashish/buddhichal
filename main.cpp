@@ -11,6 +11,6 @@ int main()
 
   //chess.run();
   //checkers.run();
-  //buddhichal.run();
+  buddhichal.run();
 
 }
