@@ -5,8 +5,8 @@
 int main()
 {
 
-  Chess chess;
-  Checkers checkers;
+  //Chess chess;
+  //Checkers checkers;
   Buddhichal buddhichal;
 
   //chess.run();

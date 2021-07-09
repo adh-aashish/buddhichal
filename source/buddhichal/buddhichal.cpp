@@ -22,38 +22,33 @@ Buddhichal::Buddhichal():
     winner(' '),
     currPlayer('X')
 {
-    if(!mCross.loadFromFile("./assets/Textures/cross.jpg"))
+    if(!mCross.loadFromFile("../assets/buddhichal/textures/cross.jpg"))
     {
         //error message
         std::cout << "Couldnot load the file" << std::endl;
     }
 
-    if(!font.loadFromFile("../../assets/buddhichal/Font/Hack.ttf"))
+/*    if(!font.loadFromFile("../../assets/buddhichal/Font/Hack.ttf"))
+    {
+        //error message
+    }
+*/
+    if(!bgTexture.loadFromFile("../assets/buddhichal/textures/wallpaper.jpg"))
     {
         //error message
     }
 
-    if(!bgTexture.loadFromFile("../../assets/buddhichal/textures/plain-textured-wallpaper-500x500.jpg"))
+    if(!boardTexture.loadFromFile("../assets/buddhichal/textures/boardTexture.jpg"))
     {
         //error message
     }
     
-    if(!bgTexture.loadFromFile("../../assets/buddhichal/textures/plain-textured-wallpaper-500x500.jpg"))
+    if(!titleTexture.loadFromFile("../assets/buddhichal/textures/tictactoe.png"))
     {
         //error message
     }
 
-    if(!boardTexture.loadFromFile("../../assets/buddhichal/textures/boardTexture.jpg"))
-    {
-        //error message
-    }
-    
-    if(titleTexture.loadFromFile("../../assets/buddhichal/textures/tictactoe.png"))
-    {
-        //error message
-    }
-
-    if(restartTexture.loadFromFile("../../assets/textures/restart.png"))
+    if(!restartTexture.loadFromFile("../assets/buddhichal/textures/restart.png"))
     {
         //error message
     }
@@ -125,7 +120,6 @@ void Buddhichal::processEvents()
             {
                 restartGame();
             }
-
         }
         break;
 			default:
@@ -153,7 +147,6 @@ void Buddhichal::updateGameBoard()
                         gameBoard[j][i] = currPlayer;
                         setPlayer(x+i*(h+6)+w/2,y+j*(h+6)+h/2);
                     }
-
                 }
             }
         }
@@ -321,9 +314,3 @@ void Buddhichal::drawRect(float x, float y)
     window.draw(rect);
 }
 
-int main()
-{
-    Buddhichal game;
-    game.run();
-    return 0;
-}
