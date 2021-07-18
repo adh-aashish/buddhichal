@@ -1,10 +1,12 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Window/Mouse.hpp>
 #include <sstream>
 #include <iostream>
-#include "../../include/Buddhichal.hpp"
+#include "../../include/buddhichal/Buddhichal.hpp"
 
 char gameBoard[3][3] = {
-    {' ', ' ', ' '},
+    {' ',' ',' '},
     {' ',' ',' '},
     {' ',' ',' '}
 }; 
@@ -13,12 +15,18 @@ int Buddhichal::cirCount = 0;
 int Buddhichal::crossCount= 0;
 
 Buddhichal::Buddhichal():
+    viewSize(sf::Vector2f(640,640)),
     window(sf::VideoMode(viewSize.x,viewSize.y),"Buddhichal"),
     x(viewSize.x/4),
     y(viewSize.y/4),
     w(100),
     h(100),
+    dragCir(NULL),
+    dragCross(NULL),
     gameOver(false),
+    isDragging(false),
+    isDraw(false),
+    noMarkLeft(false),
     winner(' '),
     currPlayer('X')
 {
@@ -52,7 +60,6 @@ Buddhichal::Buddhichal():
     {
         //error message
     }
-   
     bgSprite.setTexture(bgTexture);
     bgSprite.setPosition(0,0);
     bgSprite.setScale(1.95,1.95);
@@ -61,6 +68,7 @@ Buddhichal::Buddhichal():
     restartSprite.setTexture(restartTexture);
     restartSprite.setPosition(x+w/2,viewSize.y-100);
     text.setFont(font);
+
 }
 
 void::Buddhichal::run()
@@ -106,17 +114,38 @@ void Buddhichal::processEvents()
 				break;
 
       case sf::Event::MouseButtonPressed:
-				if(event.mouseButton.button == sf::Mouse::Button::Left)
+        /*if(event.mouseButton.button == sf::Mouse::Button::Left)
+        {
+            mousePressed = (mousePressed)? false : true;
+        }
+        */
+				if(event.mouseButton.button == sf::Mouse::Button::Left && !isDragging)
         {
             mousePosition = sf::Mouse::getPosition(window);
-            if(mousePosition.x >= x && mousePosition.x <= (x+(3*w)+12))
+            if(mousePosition.x >= x && mousePosition.x <= (x+(3*w)+12) && 
+                    !gameOver && mousePosition.y >= y && mousePosition.y 
+                    <= (y+(3*h)+12))
             {
-                if(mousePosition.y >= y && mousePosition.y <= (y+(3*h)+12) && !gameOver)
+                if(noMarkLeft and !isDragging)
                 {
-                    updateGameBoard();
+                    std::cout << "Im calling selectMark" << std::endl;
+                    selectMark();
+                    std::cout << "Im came from selectMark" << std::endl;
+                    //move mark here
+                }
+                else if(!noMarkLeft) 
+                {
+                    //checkMoves();
+                    placeMark();
                 }
             }
-            if(gameOver && restartSprite.getGlobalBounds().contains(mousePosition.x,mousePosition.y))
+            if(cirCount>2 && crossCount >2)
+            {
+                noMarkLeft = true;
+            }
+
+            if(gameOver && restartSprite.getGlobalBounds().contains(
+                        mousePosition.x,mousePosition.y))
             {
                 restartGame();
             }
@@ -128,7 +157,7 @@ void Buddhichal::processEvents()
 	}
 }
 
-void Buddhichal::updateGameBoard()
+void Buddhichal::placeMark()
 {
     for(int i=0; i<3; i++)
     {
@@ -136,22 +165,87 @@ void Buddhichal::updateGameBoard()
         {
             if(mousePosition.x>= x+i*(h+6) && mousePosition.x <= x+i*(h+6)+w)
             {
-                if(mousePosition.y >= y+j*(w+6) && mousePosition.y <= y+j*(w+6)+h)
+                if(mousePosition.y >= y+j*(w+6) && mousePosition.y <= 
+                        y+j*(w+6)+h)
                 {
-                    if (gameBoard[j][i] != ' ')
-                    {
-                        processEvents();
-                    }
-                    else
+                    if(gameBoard[j][i] == ' ')
                     {
                         gameBoard[j][i] = currPlayer;
                         setPlayer(x+i*(h+6)+w/2,y+j*(h+6)+h/2);
+                    }
+                    else
+                    {
+                        processEvents();
                     }
                 }
             }
         }
     }
 }
+
+void Buddhichal::moveMark()
+{
+    if(isDragging)
+    {
+        if(currPlayer == 'X')
+        {
+            std::cout << "Moving X" << std::endl;
+            dragCross->setPosition(sf::Mouse::getPosition(window).x,
+                    sf::Mouse::getPosition(window).y);
+            window.draw(*dragCross);
+        }
+
+        if(currPlayer == 'O')
+        {
+            dragCir->setPosition(sf::Mouse::getPosition(window).x,
+                    sf::Mouse::getPosition(window).y);
+            window.draw(*dragCir);
+        }
+    }
+
+}
+
+void Buddhichal::selectMark()
+{
+    if(currPlayer == 'X')
+    {
+        std::cout << "here?" << std::endl;
+        for(int i=0; i<3; i++)
+        {
+            if(cross[i].getGlobalBounds().contains(mousePosition.x,
+                        mousePosition.y))
+            {
+                isDragging = true;
+                std::cout << "isDragging :  "<< isDragging << std::endl;
+                std::cout << "which is cross "<< i << std::endl;
+                dragCross = &cross[i];
+                std::cout << "assigned" << std::endl;
+                break;
+               // dragMe(cross[i]);
+            }
+        }
+    }
+
+    if(currPlayer == 'O')
+    {
+        std::cout << "o here?" << std::endl;
+        for(int i=0; i<3; i++)
+        {
+            if(cir[i].getGlobalBounds().contains(mousePosition.x,
+                        mousePosition.y))
+            {
+                isDragging = true;
+                dragCir = &cir[i];
+                std::cout << "I'm here inside O player selcetion" << std::endl;
+                //dragMe(cir[i]);
+                break;
+            }
+        }
+    }
+}
+    //get the current mouse postion 
+    //get the sprite selected
+    //put the sprite where the mouse is kept
 
 void Buddhichal::drawPlayer()
 {
@@ -183,7 +277,8 @@ void Buddhichal::setPlayer(float x,float y)
             cross[crossCount].setTexture(mCross);
             cross[crossCount].setScale(0.1,0.1);
             cross[crossCount].setPosition(x,y);
-            cross[crossCount].setOrigin(mCross.getSize().x/2.f, mCross.getSize().y/2.f);
+            cross[crossCount].setOrigin(mCross.getSize().x/2.f,
+                    mCross.getSize().y/2.f);
             currPlayer = 'O';
             crossCount++;
             break; 
@@ -222,14 +317,16 @@ void Buddhichal::checkWin()
 {
     for(int i=0; i<3; i++)
     {
-        if(gameBoard[i][0] == gameBoard[i][1] && gameBoard[i][0] == gameBoard[i][2] && gameBoard[i][0] !=' ')
+        if(gameBoard[i][0] == gameBoard[i][1] && gameBoard[i][0] == 
+                gameBoard[i][2] && gameBoard[i][0] !=' ')
         {
             winner = gameBoard[i][0];
             gameOver = true;
             drawLine(x,y+i*(h+6)+h/2,0);
             break;
         }
-        if(gameBoard[0][i] == gameBoard[1][i] && gameBoard[0][i] == gameBoard[2][i] && gameBoard[0][i] !=' ')
+        if(gameBoard[0][i] == gameBoard[1][i] && gameBoard[0][i] == 
+                gameBoard[2][i] && gameBoard[0][i] !=' ')
         {
             winner = gameBoard[0][i];
             gameOver = true;
@@ -237,13 +334,15 @@ void Buddhichal::checkWin()
             break;
         }
     }
-    if(gameBoard[0][0] == gameBoard[1][1] && gameBoard[0][0] == gameBoard[2][2] && gameBoard[0][0] !=' ')
+    if(gameBoard[0][0] == gameBoard[1][1] && gameBoard[0][0] == 
+            gameBoard[2][2] && gameBoard[0][0] !=' ')
     {
         winner = gameBoard[0][0];
         gameOver = true;
         drawLine(x,y,45);
     }
-    if(gameBoard[0][2] == gameBoard[1][1] && gameBoard[0][2] == gameBoard[2][0] && gameBoard[0][2] !=' ')
+    if(gameBoard[0][2] == gameBoard[1][1] && gameBoard[0][2] == 
+            gameBoard[2][0] && gameBoard[0][2] !=' ')
     {
         winner = gameBoard[0][2];
         gameOver = true;
@@ -270,6 +369,7 @@ void Buddhichal::restartGame()
         }
     }
     gameOver = false;
+    noMarkLeft = false;
     winner = ' ';
     cirCount = 0;
     crossCount =0;
@@ -283,6 +383,29 @@ void Buddhichal::render()
     window.draw(bgSprite);
     window.draw(titlesprite);
     drawBoard();
+    if(isDragging && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+    {
+        if(currPlayer == 'X' && dragCross != NULL)
+        {
+            dragCross->setPosition(sf::Mouse::getPosition(window).x,
+                    sf::Mouse::getPosition(window).y);
+            window.draw(*dragCross);
+        }
+
+        if(currPlayer == 'O' && dragCir !=NULL)
+        {
+            dragCir->setPosition(sf::Mouse::getPosition(window).x,
+                    sf::Mouse::getPosition(window).y);
+            window.draw(*dragCir);
+        }
+    }else if(isDragging && !sf::Mouse::isButtonPressed(sf::Mouse::Left))
+    {
+        isDragging = false;
+        currPlayer = (currPlayer == 'X')? 'O':'X';
+        dragCir = NULL;
+        dragCross = NULL;
+    }
+    
     drawPlayer();
     if(gameOver)
     {
