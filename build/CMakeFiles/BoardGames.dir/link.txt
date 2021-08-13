@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/BoardGames.dir/main.cpp.o CMakeFiles/BoardGames.dir/source/buddhichal/buddhichal.cpp.o CMakeFiles/BoardGames.dir/source/checkers/checkers.cpp.o CMakeFiles/BoardGames.dir/source/chess/chess.cpp.o -o BoardGames  -lsfml-network -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system 

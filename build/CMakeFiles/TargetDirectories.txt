@@ -1,0 +1,3 @@
+/home/aashish/Dev/Projects/BoardGames/build/CMakeFiles/rebuild_cache.dir
+/home/aashish/Dev/Projects/BoardGames/build/CMakeFiles/edit_cache.dir
+/home/aashish/Dev/Projects/BoardGames/build/CMakeFiles/BoardGames.dir
