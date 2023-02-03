@@ -1,48 +1,29 @@
-# BoardGames
+# Buddhichal
 
-BoardGames is the collection of three games namely Buddhichal, Checkers and Chess.
+Buddhichal is a game played by locals in Nepal from long time ago. This game is usually played by marking in the mud or stone and using 
+leaves and stone as peices. This beutiful game is now getting extinct as children today are more into mobile games. This is my attempt to 
+revive the game that I loved to play when I was a child. There is both multi-player and single-player mode.
 
-Each game has single player ( vs computer ) and multiplayer mode ( except in chess ).
+## Dependencies
+  - SFML
+  - CMake
+  
+## **Building Instructions**
 
-See the building instructions below to build and play on your own computer.
-
-## Images of Some Screens :
-
-### 1. Main Menu
-![](./finalImages/mainmenu.png)
-### 2. Buddhichal
-![](./finalImages/buddhichal.png)
-
-![](./finalImages/bc3.png)
-
-### 3. Checkers
-![](./finalImages/checkers.png)
-
-![](./finalImages/checkers-king.png)
-
-### 4. Chess
-![](./finalImages/chess2.png)
-
-
-### Further images :
-The final images of the game can be seen from [here](https://github.com/avisekksarma/BoardGames/tree/main/finalImages)
-
-##### **Building Instructions**
-
-Dependencies: SFML 2.5.1 , cmake
-
-Install SFML as according to your machine.
-
-##### **Using Cmake from commandline**
-
-From our base project directory, type in the following commands:
-
-```
-$ rm -rf build
+```bash
 $ cmake CMakeLists.txt -B build
 $ cd build
 $ make
 $ ./BoardGames
 ```
+## Some Screenshots of the game
+**Menu**
+
+![image](https://user-images.githubusercontent.com/64474508/216657159-9f588d6d-528d-43d4-9895-4470a0d6115c.png)
+
+**Gameplay**
+
+![image](https://user-images.githubusercontent.com/64474508/216656757-d7836103-56d2-4dd4-be4f-e5917a451fcd.png)
+
 
 
